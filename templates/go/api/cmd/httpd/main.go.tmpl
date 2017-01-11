@@ -1,0 +1,42 @@
+package main
+
+import (
+	"api/{{.Comp.Name}}/proto"
+	"context"
+	"log"
+	"net/http"
+	"os"
+
+	"github.com/grpc-ecosystem/grpc-gateway/runtime"
+	"google.golang.org/grpc"
+)
+
+func main() {
+	port := "8080"
+	if p, ok := os.LookupEnv("PORT"); ok {
+		port = p
+	}
+
+	tgtAddr := "localhost:50051"
+	if ta, ok := os.LookupEnv("TARGET_ADDR"); ok {
+		tgtAddr = ta
+	}
+
+	log.Fatal(listen(port, tgtAddr))
+}
+
+func listen(port, tgtAddr string) error {
+	ctx := context.Background()
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
+	gw := runtime.NewServeMux()
+    if err := {{.Comp.Name}}.Register{{.Comp.Name | title}}ServiceHandlerFromEndpoint(ctx, gw, tgtAddr, []grpc.DialOption{grpc.WithInsecure()}); err != nil {
+		return err
+	}
+
+	mux := http.NewServeMux()
+	mux.Handle("/", gw)
+
+	return http.ListenAndServe(":"+port, mux)
+}

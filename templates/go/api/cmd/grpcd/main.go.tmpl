@@ -1,0 +1,36 @@
+package main
+
+import (
+	"log"
+	"net"
+	"os"
+
+	"google.golang.org/grpc"
+
+	"api/{{.Comp.Name}}/proto"
+)
+
+func main() {
+{{ if .HasDBDep }}
+	defer db.Close()
+{{ end }}
+
+	port := "50051"
+	if p, ok := os.LookupEnv("PORT"); ok {
+		port = p
+	}
+
+	log.Fatal(listen(port))
+}
+
+func listen(port string) error {
+	l, err := net.Listen("tcp", ":"+port)
+	if err != nil {
+		return err
+	}
+
+	s := grpc.NewServer()
+    {{.Comp.Name}}.Register{{.Comp.Name | title}}ServiceServer(s, &service{})
+
+	return s.Serve(l)
+}
