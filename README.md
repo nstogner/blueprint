@@ -1,5 +1,7 @@
 # Blueprint
 
+**Currently not under active development: I am shifting my focus to serverless architectures**
+
 Blueprint is a command line tool that:
 
 * Maintains a structured repository layout (git)
