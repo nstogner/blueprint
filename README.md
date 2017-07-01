@@ -1,6 +1,6 @@
 # Blueprint
 
-**Currently not under active development: I am shifting my focus to serverless architectures**
+**A newer version of this project lives here: [blueprint](https://github.com/upgear/blueprint) and [mono](https://github.com/upgear/mono).**
 
 Blueprint is a command line tool that:
 
